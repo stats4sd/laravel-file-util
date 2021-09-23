@@ -1,16 +1,16 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace Stats4sd\FileUtil;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \VendorName\Skeleton\Skeleton
+ * @see \Stats4sd\FileUtil\FileUtil
  */
-class SkeletonFacade extends Facade
+class FileUtilFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'skeleton';
+        return 'fileutil';
     }
 }

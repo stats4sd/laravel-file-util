@@ -1,7 +1,7 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace Stats4sd\FileUtil;
 
-class Skeleton
+class FileUtil
 {
 }
