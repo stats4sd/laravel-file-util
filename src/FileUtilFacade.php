@@ -11,6 +11,6 @@ class FileUtilFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'fileutil';
+        return 'laravel-file-util';
     }
 }

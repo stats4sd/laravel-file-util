@@ -16,7 +16,7 @@ class FileUtilServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('fileutil')
+            ->name('laravel-file-util')
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_fileutil_table')

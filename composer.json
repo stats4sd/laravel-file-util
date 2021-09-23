@@ -1,5 +1,5 @@
 {
-    "name": "stats4sd/fileutil",
+    "name": "stats4sd/laravel-file-util",
     "description": "Laravel File Utility Package",
     "keywords": [
         "stats4sd",
