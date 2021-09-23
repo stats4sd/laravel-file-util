@@ -3,10 +3,8 @@
 namespace Stats4sd\FileUtil\Http\Controllers\Operations;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 trait ExportOperation
 {
@@ -22,8 +20,8 @@ trait ExportOperation
         logger('ExportOperation.setupExportRoutes() starts...');
 
         Route::get($segment . '/export', [
-            'as'        => $routeName . '.export',
-            'uses'      => $controller . '@export',
+            'as' => $routeName . '.export',
+            'uses' => $controller . '@export',
             'operation' => 'export',
         ]);
     }
@@ -58,9 +56,10 @@ trait ExportOperation
         $this->crud->hasAccessOrFail('export');
         $exporter = $this->crud->get('export.exporter');
 
-        if (!$exporter) {
+        if (! $exporter) {
             return response("Exporter Class not found - please check the exporter is properly setup for this page", 500);
         }
-        return Excel::download(new $exporter, $this->crud->entity_name_plural." - ".Carbon::now()->format('Ymd_His').".xlsx");
+
+        return Excel::download(new $exporter(), $this->crud->entity_name_plural." - ".Carbon::now()->format('Ymd_His').".xlsx");
     }
 }
