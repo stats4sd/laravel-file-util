@@ -2,13 +2,10 @@
 
 namespace Stats4sd\FileUtil\Http\Controllers\Operations;
 
-use Carbon\Carbon;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Prologue\Alerts\Facades\Alert;
 use App\Http\Requests\ImportRequest;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
+use Prologue\Alerts\Facades\Alert;
 
 trait ImportOperation
 {
@@ -22,15 +19,15 @@ trait ImportOperation
     protected function setupImportRoutes($segment, $routeName, $controller)
     {
         Route::get($segment . '/import', [
-            'as'        => $routeName . '.getImport',
-            'uses'      => $controller . '@getImportForm',
+            'as' => $routeName . '.getImport',
+            'uses' => $controller . '@getImportForm',
             'operation' => 'import',
         ]);
 
         Route::post($segment . '/import', [
-            'as'         => $routeName.'.postImport',
-            'uses'       => $controller.'@postImportForm',
-            'operation'  => 'import',
+            'as' => $routeName.'.postImport',
+            'uses' => $controller.'@postImportForm',
+            'operation' => 'import',
 
         ]);
     }
@@ -86,7 +83,6 @@ trait ImportOperation
         return view('crud::import', $this->data);
     }
 
-
     /**
      * Import All rows to Excel
      *
@@ -97,13 +93,13 @@ trait ImportOperation
         $this->crud->hasAccessOrFail('import');
         $importer = $this->crud->get('import.importer');
 
-        if (!$importer) {
+        if (! $importer) {
             return response("Importer Class not found - please check the importer is properly setup for this page", 500);
         }
 
         $request = $this->crud->validateRequest();
 
-        Excel::import(new $importer, $request->importFile);
+        Excel::import(new $importer(), $request->importFile);
 
 
         Alert::success(trans('backpack::crud.insert_success'))->flash();
@@ -111,6 +107,7 @@ trait ImportOperation
         if ($route = $this->crud->get('import.redirect')) {
             return redirect(url($route));
         }
+
         return redirect(url($this->crud->route));
     }
 }
