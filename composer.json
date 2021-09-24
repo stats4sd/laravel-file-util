@@ -19,7 +19,8 @@
         "php": "^8.0",
         "spatie/laravel-package-tools": "^1.4.3",
         "illuminate/contracts": "^8.37",
-        "maatwebsite/excel": "^3.1"
+        "maatwebsite/excel": "^3.1",
+        "prologue/alerts": "^0.4.1"
     },
     "require-dev": {
         "nunomaduro/collision": "^5.3",

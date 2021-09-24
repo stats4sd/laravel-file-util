@@ -17,8 +17,6 @@ trait ExportOperation
      */
     protected function setupExportRoutes($segment, $routeName, $controller)
     {
-        logger('ExportOperation.setupExportRoutes() starts...');
-
         Route::get($segment . '/export', [
             'as' => $routeName . '.export',
             'uses' => $controller . '@export',
@@ -31,8 +29,6 @@ trait ExportOperation
      */
     protected function setupExportDefaults()
     {
-        logger('ExportOperation.setupExportDefaults() starts...');
-
         $this->crud->allowAccess('export');
 
         $this->crud->operation('export', function () {
@@ -40,7 +36,7 @@ trait ExportOperation
         });
 
         $this->crud->operation('list', function () {
-            $this->crud->addButton('top', 'export', 'view', 'crud::buttons.export');
+            $this->crud->addButton('top', 'export', 'view', 'file-util::vendor.backpack.crud.buttons.export');
         });
     }
 
@@ -51,8 +47,6 @@ trait ExportOperation
      */
     public function export()
     {
-        logger('ExportOperation.export() starts...');
-
         $this->crud->hasAccessOrFail('export');
         $exporter = $this->crud->get('export.exporter');
 
