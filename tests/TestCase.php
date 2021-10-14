@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Stats4sd\FileUtil\FileUtilServiceProvider;
 
+/**
+ * This package does not use this feature at this moment,
+ * Keep this file for possible future use
+ */
+
+
 class TestCase extends Orchestra
 {
     protected function setUp(): void

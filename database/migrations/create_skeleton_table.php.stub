@@ -4,6 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * This package does not use this feature at this moment,
+ * Keep this file for possible future use
+ */
+
+
 return new class extends Migration
 {
     public function up()

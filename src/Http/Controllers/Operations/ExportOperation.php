@@ -6,6 +6,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
 
+/**
+ * This trait is for Export feature
+ */
+
+
 trait ExportOperation
 {
     /**

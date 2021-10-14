@@ -6,6 +6,12 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Stats4sd\FileUtil\Commands\FileUtilCommand;
 
+/**
+ * This package does not have configuration file and migration file at this momment
+ * Keep them in below Service Provider for possible future use
+ */
+
+ 
 class FileUtilServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void

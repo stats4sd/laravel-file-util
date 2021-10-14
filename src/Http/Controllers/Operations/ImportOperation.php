@@ -10,6 +10,11 @@ use App\Http\Requests\ImportRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * This trait is for Import feature
+ */
+
+
 trait ImportOperation
 {
     /**
