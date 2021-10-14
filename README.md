@@ -122,8 +122,6 @@ class TagCrudController extends CrudController
 
 ```
 
-
-
 That's it! The operation adds an "Export" button to the 'top' stack in List view. Click the button to download the File from your ModelExport class.
 
 **Notes**:
@@ -139,14 +137,128 @@ The ImportOperation lets you link an Import class built with Laravel Excel to yo
 How to add:
 
 1. Build your Import operation as described [here](https://docs.laravel-excel.com/3.1/imports/)
- - see example here (add link to example Import class)
+
+```php
+<?php
+
+namespace App\Imports;
+
+use App\Models\Tag;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+
+class TagsImport implements ToModel, WithHeadingRow
+{
+    /**
+     * @param array $row
+     *
+     * @return Tags|null
+     */
+    public function model(array $row)
+    {
+        return new Tag([
+           'name'       => $row['name'],
+           'slug'       => $row['slug'],
+           'files'      => $row['files'],
+        ]);
+    }
+}
+```
 
 2. Use the ImportOperation in your CrudController: `use \App\Http\Controllers\Operations\ImportOperation` 
- - see example here (add link to example CrudController class)
 
 3. Add the following to your CrudController's setup() method:
 `CRUD::set('import.importer, YourModelImport::class);` (replace with the actual name of your ModelImport class)
- - see example here (add link to example CrudController class)
+
+```php
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Imports\TagsImport;
+use App\Http\Requests\TagRequest;
+use \Stats4sd\FileUtil\Http\Controllers\Operations\ImportOperation;
+use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+
+/**
+ * Class TagCrudController
+ * @package App\Http\Controllers\Admin
+ * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
+ */
+class TagCrudController extends CrudController
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ImportOperation;
+
+    /**
+     * Configure the CrudPanel object. Apply settings to all operations.
+     * 
+     * @return void
+     */
+    public function setup()
+    {
+        CRUD::setModel(\App\Models\Tag::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/tag');
+        CRUD::setEntityNameStrings('tag', 'tags');
+        CRUD::set('import.importer', TagsImport::class);
+    }
+
+    /**
+     * Define what happens when the List operation is loaded.
+     * 
+     * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
+     * @return void
+     */
+    protected function setupListOperation()
+    {
+        CRUD::setFromDb(); // columns        
+
+        /**
+         * Columns can be defined using the fluent syntax or array syntax:
+         * - CRUD::column('price')->type('number');
+         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
+         */
+    }
+
+    /**
+     * Define what happens when the Create operation is loaded.
+     * 
+     * @see https://backpackforlaravel.com/docs/crud-operation-create
+     * @return void
+     */
+    protected function setupCreateOperation()
+    {
+        CRUD::setValidation(TagRequest::class);
+
+        CRUD::setFromDb(); // fields
+
+        CRUD::field('files')->type('upload_multiple')->disk('local')->upload(true)->label('Files or charts for the site')->hint('If you have charts or other files, please upload them here');
+
+        /**
+         * Fields can be defined using the fluent syntax or array syntax:
+         * - CRUD::field('price')->type('number');
+         * - CRUD::addField(['name' => 'price', 'type' => 'number'])); 
+         */
+    }
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     * 
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function setupUpdateOperation()
+    {
+        $this->setupCreateOperation();
+    }
+}
+
+```
 
 That's it! The operation adds an "Import" button to the 'top' stack in List view. Click this button to be taken to the Import View. This view contains a basic form with a file upload input and a submit button. Add an Excel file, submit, and the file will be processed by your ModelImport class.
 
