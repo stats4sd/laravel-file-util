@@ -7,7 +7,7 @@ namespace Stats4sd\FileUtil;
  * Keep this file for possible future use
  */
 
- 
+
 class FileUtil
 {
 }
