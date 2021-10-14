@@ -141,8 +141,6 @@ class TagCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(TagRequest::class);
-
         CRUD::setFromDb(); // fields
     }
 
