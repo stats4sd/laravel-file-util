@@ -262,7 +262,7 @@ class ImportRequest extends FormRequest
 }
 ```
 
-3. Use your ModelImport class in your CrudController: `use App\Exports\TagsImport;` 
+3. Use your ModelImport class in your CrudController: `use App\Imports\TagsImport;` 
 
 4. Use the ImportOperation in your CrudController: `use \Stats4sd\FileUtil\Http\Controllers\Operations\ImportOperation;` 
 
@@ -270,7 +270,7 @@ class ImportRequest extends FormRequest
 `use ImportOperation;` 
 
 6. Add the following to your CrudController's setup() method:
-`CRUD::set('import.importer, YourModelImport::class);` (replace with the actual name of your ModelImport class)
+`CRUD::set('import.importer', YourModelImport::class);` (replace with the actual name of your ModelImport class)
 
 
 ```php
@@ -356,9 +356,9 @@ That's it! The operation adds an "Import" button to the 'top' stack in List view
 
 ## File Upload + File Download Operations
 
-1. Use FileController class in your web.php: `use \Stats4sd\FileUtil\Http\Controllers\FileController;`
+1. Use FileController class in your routes\web.php: `use \Stats4sd\FileUtil\Http\Controllers\FileController;`
 
-2. Add below section in your web.php
+2. Add below section in your routes\web.php
 
 ```
 Route::group([
@@ -378,6 +378,7 @@ Route::group([
 
 6. Add below function to your Model class, it will save uploaded files into folder "storage\app\site". File name will be stored in Model class column "files"
 
+```
     public function setFilesAttribute($value)
     {
         $attribute_name = "files";
@@ -386,6 +387,7 @@ Route::group([
 
         $this->uploadMultipleFilesWithNames($value, $attribute_name, $disk, $destination_path);
     }
+```
 
 7. Add the following to your CrudController's setupCreateOperation() method:
 `CRUD::field('files')->type('upload_multiple')->disk('local')->upload(true)->label('Files or charts for the site')->hint('If you have charts or other files, please upload them here');`
