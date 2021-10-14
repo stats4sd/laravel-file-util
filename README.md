@@ -14,7 +14,7 @@ composer require stats4sd/laravel-file-util
 ```
 ## Usage
 
-# Import + Export Operations
+## Import + Export Operations
 
 Both import and export operations use and require the [Laravel Excel](https://docs.laravel-excel.com/3.1) package. 
 
@@ -26,6 +26,62 @@ How to add an Excel Export:
 1. Build your Export operation as described [here](https://docs.laravel-excel.com/3.1/exports/)
  - To test this operation, start with the most basic version of an export (e.g. impliment FromCollection and just get all() items from your CRUD's model. You can always add things later to customise your export.
  - see example here (add link to example Export class)
+
+```php
+<?php
+
+namespace App\Exports;
+
+use App\Models\Tag;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
+
+class TagsExport implements FromCollection, WithTitle, WithHeadings
+{
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    public function collection()
+    {
+        logger('TagsExport.collection() starts...');
+
+        return Tag::select(
+            'id',
+            'name',
+            'slug',
+            'files',
+            'created_at',
+            'updated_at',
+        )->get();
+    }
+
+    /**
+    * @return string
+    */
+    public function title(): string
+    {
+        logger('TagsExport.title() starts...');
+
+        return 'Tag';
+    }
+
+    public function headings(): array
+    {
+        logger('TagsExport.headings() starts...');
+
+        return [
+            'id',
+            'name',
+            'slug',
+            'files',
+            'created_at',
+            'updated_at',
+        ];
+    }
+}
+```
+
 
 2. Use the ExportOperation in your CrudController: `use \App\Http\Controllers\Operations\ExportOperation` 
  - see example here (add link to example CrudController class)
@@ -67,10 +123,10 @@ That's it! The operation adds an "Import" button to the 'top' stack in List view
 
 **TO DO: add examples of validation with both ToModel / BatchInserts AND ToCollection concerns**
 
-
 ```php
 TODO add example code here
 ```
+
 
 ## Changelog
 
