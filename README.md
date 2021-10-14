@@ -76,9 +76,14 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
 ```
 
 
-2. Use the ExportOperation in your CrudController: `use \Stats4sd\FileUtil\Http\Controllers\Operations\ExportOperation;` 
+2. Use your Export operation class in your CrudController: `use App\Exports\TagsExport;` 
 
-3. Add the following to your CrudController's setup() method:
+3. Use the ExportOperation in your CrudController: `use \Stats4sd\FileUtil\Http\Controllers\Operations\ExportOperation;` 
+
+4. Add the following in your CrudController: 
+`use ExportOperation;` 
+
+5. Add the following to your CrudController's setup() method:
 `CRUD::set('export.exporter', YourModelExport::class);` (replace with the actual name of your ModelExport class)
 
 ```php
@@ -87,7 +92,6 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\TagsExport;
-use App\Http\Requests\TagRequest;
 use \Stats4sd\FileUtil\Http\Controllers\Operations\ExportOperation;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
