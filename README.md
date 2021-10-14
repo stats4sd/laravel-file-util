@@ -354,9 +354,42 @@ That's it! The operation adds an "Import" button to the 'top' stack in List view
 
 **TO DO: add examples of validation with both ToModel / BatchInserts AND ToCollection concerns**
 
-```php
-TODO add example code here
+## File Upload + File Download Operations
+
+1. Use FileController class in your web.php: `use \Stats4sd\FileUtil\Http\Controllers\FileController;`
+
+2. Add below section in your web.php
+
 ```
+Route::group([
+    'middleware' => ['web']
+], function () {
+    Route::get('image/{path}', [FileController::class, 'getImage'])->where('path', '.*')->name('image.get');
+    Route::get('download/{path}/{disk?}', [FileController::class, 'download'])->where('path', '.*')->name('file.download');
+});
+```
+
+3. In config\filesystem.php, add below line to "disks" \ "local" section
+`'url' => env('APP_URL').'/download/',`
+
+4. Use HasUploadFields class in your Model class, e.g. Tag: `use \Stats4sd\FileUtil\Models\Traits\HasUploadFields;`
+
+5. Use trait HasUploadFields class in your Model class
+
+6. Add below function to your Model class, it will save uploaded files into folder "storage\app\site". Filename will be stored in Model class column "files"
+
+    public function setFilesAttribute($value)
+    {
+        $attribute_name = "files";
+        $disk = "local";
+        $destination_path = "site";
+
+        $this->uploadMultipleFilesWithNames($value, $attribute_name, $disk, $destination_path);
+    }
+
+7. Add the following to your CrudController's setupCreateOperation() method:
+`CRUD::field('files')->type('upload_multiple')->disk('local')->upload(true)->label('Files or charts for the site')->hint('If you have charts or other files, please upload them here');`
+
 
 
 ## Changelog
