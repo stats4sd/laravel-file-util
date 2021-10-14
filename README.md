@@ -14,11 +14,10 @@ composer require stats4sd/laravel-file-util
 ```
 ## Usage
 
-## Import + Export Operations
+## 1. Exporting Data through a Laravel Backpack Crud panel
 
 Both import and export operations use and require the [Laravel Excel](https://docs.laravel-excel.com/3.1) package. 
 
-## Exporting Data through a Laravel Backpack Crud panel
 The ExportOperation lets you link an ModelExport class built with Laravel Excel to your Crud panel.
 
 How to add an Excel Export:
@@ -167,7 +166,7 @@ That's it! The operation adds an "Export" button to the 'top' stack in List view
 
 Everything about the exported file is defined by the ModelExport class. You can customise it using any of the features of [Laravel Excel](https://docs.laravel-excel.com/3.1) as you would if you were using the package anywhere else in Laravel. All this Operation does is make it easier to quickly link an ModelExport class to a Crud panel. 
 
-## Importing Data through a Laravel Backpack Crud panel
+## 2. Importing Data through a Laravel Backpack Crud panel
 The ImportOperation lets you link an ModelImport class built with Laravel Excel to your Crud panel.
 
 How to add:
@@ -354,7 +353,7 @@ That's it! The operation adds an "Import" button to the 'top' stack in List view
 
 **TO DO: add examples of validation with both ToModel / BatchInserts AND ToCollection concerns**
 
-## File Upload + File Download Operations
+## 3. File Upload + File Download Operations
 
 1. Use FileController class in your routes\web.php: `use \Stats4sd\FileUtil\Http\Controllers\FileController;`
 
