@@ -23,8 +23,8 @@ The ExportOperation lets you link an Export class built with Laravel Excel to yo
 
 How to add an Excel Export:
 
-1. Build your Export operation as described [here](https://docs.laravel-excel.com/3.1/exports/)
- - To test this operation, start with the most basic version of an export (e.g. impliment FromCollection and just get all() items from your CRUD's model. You can always add things later to customise your export.
+1. Build your Export operation class as described [here](https://docs.laravel-excel.com/3.1/exports/)
+ - To test this operation class, start with the most basic version of an export (e.g. impliment FromCollection and just get some items from your CRUD's model. You can always add things later to customise your export.
 
 ```php
 <?php
@@ -75,7 +75,6 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
 }
 ```
 
-
 2. Use your Export operation class in your CrudController: `use App\Exports\TagsExport;` 
 
 3. Use the ExportOperation in your CrudController: `use \Stats4sd\FileUtil\Http\Controllers\Operations\ExportOperation;` 
@@ -121,6 +120,41 @@ class TagCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/tag');
         CRUD::setEntityNameStrings('tag', 'tags');
         CRUD::set('export.exporter', TagsExport::class);
+    }
+
+    /**
+     * Define what happens when the List operation is loaded.
+     * 
+     * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
+     * @return void
+     */
+    protected function setupListOperation()
+    {
+        CRUD::setFromDb(); // columns        
+    }
+
+    /**
+     * Define what happens when the Create operation is loaded.
+     * 
+     * @see https://backpackforlaravel.com/docs/crud-operation-create
+     * @return void
+     */
+    protected function setupCreateOperation()
+    {
+        CRUD::setValidation(TagRequest::class);
+
+        CRUD::setFromDb(); // fields
+    }
+
+    /**
+     * Define what happens when the Update operation is loaded.
+     * 
+     * @see https://backpackforlaravel.com/docs/crud-operation-update
+     * @return void
+     */
+    protected function setupUpdateOperation()
+    {
+        $this->setupCreateOperation();
     }
 }
 
