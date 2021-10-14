@@ -369,14 +369,14 @@ Route::group([
 });
 ```
 
-3. In config\filesystem.php, add below line to "disks" \ "local" section
+3. In config\filesystem.php, add a line to "disks" \ "local" section
 `'url' => env('APP_URL').'/download/',`
 
-4. Use HasUploadFields class in your Model class, e.g. Tag: `use \Stats4sd\FileUtil\Models\Traits\HasUploadFields;`
+4. Use HasUploadFields class in your Model class: `use \Stats4sd\FileUtil\Models\Traits\HasUploadFields;`
 
-5. Use trait HasUploadFields class in your Model class
+5. Use trait HasUploadFields class in your Model class: `use CrudTrait, HasUploadFields;`
 
-6. Add below function to your Model class, it will save uploaded files into folder "storage\app\site". Filename will be stored in Model class column "files"
+6. Add below function to your Model class, it will save uploaded files into folder "storage\app\site". File name will be stored in Model class column "files"
 
     public function setFilesAttribute($value)
     {
@@ -389,8 +389,6 @@ Route::group([
 
 7. Add the following to your CrudController's setupCreateOperation() method:
 `CRUD::field('files')->type('upload_multiple')->disk('local')->upload(true)->label('Files or charts for the site')->hint('If you have charts or other files, please upload them here');`
-
-
 
 ## Changelog
 
