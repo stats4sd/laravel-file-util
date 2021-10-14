@@ -19,12 +19,12 @@ composer require stats4sd/laravel-file-util
 Both import and export operations use and require the [Laravel Excel](https://docs.laravel-excel.com/3.1) package. 
 
 ## Exporting Data through a Laravel Backpack Crud panel
-The ExportOperation lets you link an Export class built with Laravel Excel to your Crud panel.
+The ExportOperation lets you link an ModelExport class built with Laravel Excel to your Crud panel.
 
 How to add an Excel Export:
 
-1. Build your Export operation class as described [here](https://docs.laravel-excel.com/3.1/exports/)
- - To test this operation class, start with the most basic version of an export (e.g. impliment FromCollection and just get some items from your CRUD's model. You can always add things later to customise your export.
+1. Build your ModelExport class as described [here](https://docs.laravel-excel.com/3.1/exports/)
+ - To test this operation class, start with the most basic version of an export (e.g. implement FromCollection and just get some items from your CRUD's model. You can always add things later to customise your export.
 
 ```php
 <?php
@@ -75,7 +75,7 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
 }
 ```
 
-2. Use your Export operation class in your CrudController: `use App\Exports\TagsExport;` 
+2. Use your ModelExport class in your CrudController: `use App\Exports\TagsExport;` 
 
 3. Use the ExportOperation in your CrudController: `use \Stats4sd\FileUtil\Http\Controllers\Operations\ExportOperation;` 
 
@@ -158,21 +158,21 @@ class TagCrudController extends CrudController
 
 ```
 
-That's it! The operation adds an "Export" button to the 'top' stack in List view. Click the button to download the File from your ModelExport class.
+That's it! The operation adds an "Export" button to the 'top' stack in List view. Click the button to download the File generated from your ModelExport class.
 
 **Notes**:
  - The default file name is the Crud entity_plural_name, with a date-time string appended to the end.
  - The default format is .xlsx
  - To override, add an export() method to your crud controller. 
 
-Everything about the exported file is defined by the Export class. You can customise it using any of the features of [Laravel Excel](https://docs.laravel-excel.com/3.1) as you would if you were using the package anywhere else in Laravel. All this Operation does is make it easier to quickly link an Export class to a Crud panel. 
+Everything about the exported file is defined by the ModelExport class. You can customise it using any of the features of [Laravel Excel](https://docs.laravel-excel.com/3.1) as you would if you were using the package anywhere else in Laravel. All this Operation does is make it easier to quickly link an ModelExport class to a Crud panel. 
 
 ## Importing Data through a Laravel Backpack Crud panel
-The ImportOperation lets you link an Import class built with Laravel Excel to your Crud panel.
+The ImportOperation lets you link an ModelImport class built with Laravel Excel to your Crud panel.
 
 How to add:
 
-1. Build your Import operation as described [here](https://docs.laravel-excel.com/3.1/imports/)
+1. Build your ModelImport class as described [here](https://docs.laravel-excel.com/3.1/imports/)
 
 ```php
 <?php
@@ -201,10 +201,77 @@ class TagsImport implements ToModel, WithHeadingRow
 }
 ```
 
-2. Use the ImportOperation in your CrudController: `use \App\Http\Controllers\Operations\ImportOperation` 
+2. Build your ImportRequest class as below
 
-3. Add the following to your CrudController's setup() method:
+```php
+<?php
+
+namespace App\Http\Requests;
+
+use App\Http\Requests\Request;
+use Illuminate\Foundation\Http\FormRequest;
+
+class ImportRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        // only allow updates if the user is logged in
+        return backpack_auth()->check();
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'importFile' => 'required|file|mimes:xls,xlsx|max:24000',
+        ];
+    }
+
+    /**
+     * Get the validation attributes that apply to the request.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            //
+        ];
+    }
+
+    /**
+     * Get the validation messages that apply to the request.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            //
+        ];
+    }
+}
+```
+
+3. Use your ModelImport class in your CrudController: `use App\Exports\TagsImport;` 
+
+4. Use the ImportOperation in your CrudController: `use \Stats4sd\FileUtil\Http\Controllers\Operations\ImportOperation;` 
+
+5. Add the following in your CrudController: 
+`use ImportOperation;` 
+
+6. Add the following to your CrudController's setup() method:
 `CRUD::set('import.importer, YourModelImport::class);` (replace with the actual name of your ModelImport class)
+
 
 ```php
 <?php
@@ -212,7 +279,6 @@ class TagsImport implements ToModel, WithHeadingRow
 namespace App\Http\Controllers\Admin;
 
 use App\Imports\TagsImport;
-use App\Http\Requests\TagRequest;
 use \Stats4sd\FileUtil\Http\Controllers\Operations\ImportOperation;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -253,12 +319,6 @@ class TagCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::setFromDb(); // columns        
-
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
-         */
     }
 
     /**
@@ -269,17 +329,7 @@ class TagCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(TagRequest::class);
-
         CRUD::setFromDb(); // fields
-
-        CRUD::field('files')->type('upload_multiple')->disk('local')->upload(true)->label('Files or charts for the site')->hint('If you have charts or other files, please upload them here');
-
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number'])); 
-         */
     }
 
     /**
@@ -293,7 +343,6 @@ class TagCrudController extends CrudController
         $this->setupCreateOperation();
     }
 }
-
 ```
 
 That's it! The operation adds an "Import" button to the 'top' stack in List view. Click this button to be taken to the Import View. This view contains a basic form with a file upload input and a submit button. Add an Excel file, submit, and the file will be processed by your ModelImport class.
