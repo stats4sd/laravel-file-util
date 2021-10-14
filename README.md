@@ -86,11 +86,11 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
 
 namespace App\Http\Controllers\Admin;
 
-<font color="red">
+```diff
 use App\Exports\TagsExport;
 use App\Http\Requests\TagRequest;
 use \Stats4sd\FileUtil\Http\Controllers\Operations\ExportOperation;
-</font>
+```
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
