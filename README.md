@@ -25,7 +25,6 @@ How to add an Excel Export:
 
 1. Build your Export operation as described [here](https://docs.laravel-excel.com/3.1/exports/)
  - To test this operation, start with the most basic version of an export (e.g. impliment FromCollection and just get all() items from your CRUD's model. You can always add things later to customise your export.
- - see example here (add link to example Export class)
 
 ```php
 <?php
@@ -44,8 +43,6 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
     */
     public function collection()
     {
-        logger('TagsExport.collection() starts...');
-
         return Tag::select(
             'id',
             'name',
@@ -61,15 +58,11 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
     */
     public function title(): string
     {
-        logger('TagsExport.title() starts...');
-
         return 'Tag';
     }
 
     public function headings(): array
     {
-        logger('TagsExport.headings() starts...');
-
         return [
             'id',
             'name',
@@ -84,11 +77,52 @@ class TagsExport implements FromCollection, WithTitle, WithHeadings
 
 
 2. Use the ExportOperation in your CrudController: `use \App\Http\Controllers\Operations\ExportOperation` 
- - see example here (add link to example CrudController class)
 
 3. Add the following to your CrudController's setup() method:
 `CRUD::set('export.exporter', YourModelExport::class);` (replace with the actual name of your ModelExport class)
- - see example here (add link to example Export class)
+
+```php
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Exports\TagsExport;
+use App\Http\Requests\TagRequest;
+use \Stats4sd\FileUtil\Http\Controllers\Operations\ExportOperation;
+use Backpack\CRUD\app\Http\Controllers\CrudController;
+use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+
+/**
+ * Class TagCrudController
+ * @package App\Http\Controllers\Admin
+ * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
+ */
+class TagCrudController extends CrudController
+{
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ExportOperation;
+
+    /**
+     * Configure the CrudPanel object. Apply settings to all operations.
+     * 
+     * @return void
+     */
+    public function setup()
+    {
+        CRUD::setModel(\App\Models\Tag::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/tag');
+        CRUD::setEntityNameStrings('tag', 'tags');
+        CRUD::set('export.exporter', TagsExport::class);
+    }
+}
+
+```
+
+
 
 That's it! The operation adds an "Export" button to the 'top' stack in List view. Click the button to download the File from your ModelExport class.
 
