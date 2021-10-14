@@ -2,11 +2,9 @@
 
 namespace Stats4sd\FileUtil\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * This class is for File Upload feature
@@ -15,7 +13,6 @@ use Illuminate\Support\Facades\Response;
 
 class FileController extends Controller
 {
-
     /**
      * Downloads the selected file from the selected disk
      *

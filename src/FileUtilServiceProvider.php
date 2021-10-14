@@ -11,7 +11,7 @@ use Stats4sd\FileUtil\Commands\FileUtilCommand;
  * Keep them in below Service Provider for possible future use
  */
 
- 
+
 class FileUtilServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
