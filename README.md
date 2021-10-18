@@ -14,6 +14,10 @@ composer require stats4sd/laravel-file-util
 ```
 ## Usage
 
+#### Pre-requisite:
+
+This package is developed for Laravel application with backpack package installed.
+
 ## 1. Exporting Data through a Laravel Backpack Crud panel
 
 Both import and export operations use and require the [Laravel Excel](https://docs.laravel-excel.com/3.1) package. 
