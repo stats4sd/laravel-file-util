@@ -13,13 +13,12 @@ use Intervention\Image\ImageManagerStatic;
 /**
  * This trait is for File Upload feature
  */
-
-
 /*
 |--------------------------------------------------------------------------
 | Methods for storing uploaded files (used in CRUD).
 |--------------------------------------------------------------------------
 */
+
 trait HasUploadFields
 {
     /**
@@ -32,9 +31,9 @@ trait HasUploadFields
      *     - if the value is null, deletes the file and sets null in the DB
      *     - if the value is different, stores the different file and updates DB value.
      *
-     * @param string $value            Value for that column sent from the input.
-     * @param string $attribute_name   Model attribute name (and column in the db).
-     * @param string $disk             Filesystem disk used to store files.
+     * @param string $value Value for that column sent from the input.
+     * @param string $attribute_name Model attribute name (and column in the db).
+     * @param string $disk Filesystem disk used to store files.
      * @param string $destination_path Path in disk where to store the files.
      */
     public function uploadFileWithNames($value, $attribute_name, $disk, $destination_path)
@@ -53,18 +52,13 @@ trait HasUploadFields
             $this->attributes[$attribute_name] = null;
         }
 
-        Log::info('valid = '.request()->file($attribute_name)->isValid());
-
-        Log::info('has file '. request()->hasFile($attribute_name));
-
-
 
         // if a new file is uploaded, store it on disk and its filename in the database
         if (request()->hasFile($attribute_name) && request()->file($attribute_name)->isValid()) {
             // 1. Generate a new file name
             $file = request()->file($attribute_name);
 
-            $new_file_name = $file->getClientOriginalName().time().'.'.$file->getClientOriginalExtension();
+            $new_file_name = $file->getClientOriginalName() . time() . '.' . $file->getClientOriginalExtension();
 
             Log::info($new_file_name);
 
@@ -73,6 +67,10 @@ trait HasUploadFields
 
             // 3. Save the complete path to the database
             $this->attributes[$attribute_name] = $file_path;
+        } else {
+
+            // If the request did not include a file,
+            $this->attributes[$attribute_name] = $value;
         }
     }
 
@@ -86,19 +84,19 @@ trait HasUploadFields
      *     - deletes the file
      *     - removes that file from the DB.
      *
-     * @param string $value            Value for that column sent from the input.
-     * @param string $attribute_name   Model attribute name (and column in the db).
-     * @param string $disk             Filesystem disk used to store files.
+     * @param string $value Value for that column sent from the input.
+     * @param string $attribute_name Model attribute name (and column in the db).
+     * @param string $disk Filesystem disk used to store files.
      * @param string $destination_path Path in disk where to store the files.
      */
     public function uploadMultipleFilesWithNames($value, $attribute_name, $disk, $destination_path)
     {
-        if (! is_array($this->{$attribute_name})) {
+        if (!is_array($this->{$attribute_name})) {
             $attribute_value = json_decode($this->{$attribute_name}, true) ?? [];
         } else {
             $attribute_value = $this->{$attribute_name};
         }
-        $files_to_clear = request()->get('clear_'.$attribute_name);
+        $files_to_clear = request()->get('clear_' . $attribute_name);
 
         // if a file has been marked for removal,
         // delete it from the disk and from the db
@@ -119,7 +117,7 @@ trait HasUploadFields
                     $name = explode('.', $file->getClientOriginalName());
                     array_pop($name);
                     $name = implode('', $name);
-                    $new_file_name = $name.time().'.'.$file->getClientOriginalExtension();
+                    $new_file_name = $name . time() . '.' . $file->getClientOriginalExtension();
 
                     // 2. Move the new file to the correct path
                     $file_path = $file->storeAs($destination_path, $new_file_name, $disk);
@@ -133,6 +131,15 @@ trait HasUploadFields
         $this->attributes[$attribute_name] = json_encode($attribute_value);
     }
 
+    /**
+     * Function to handle the saving of an image uploaded as a base64-encoded string.
+     *
+     * @param $value
+     * @param $attribute_name
+     * @param $disk
+     * @param $destination_path
+     * @return void
+     */
     public function uploadImage($value, $attribute_name, $disk, $destination_path)
     {
 
@@ -151,10 +158,10 @@ trait HasUploadFields
             $image = ImageManagerStatic::make($value)->encode('jpg', 90);
 
             // 1. Generate a filename. (no need for keeping filename. If you care about downloads keeping the original name, use $this->uploadFileToDisk or the upload-multiple equivalent)
-            $filename = md5($value.time()).'.jpg';
+            $filename = md5($value . time()) . '.jpg';
 
             // 2. Store the image on disk.
-            Storage::disk($disk)->put($destination_path.'/'.$filename, $image->stream());
+            Storage::disk($disk)->put($destination_path . '/' . $filename, $image->stream());
 
             // 3. Delete the previous image, if there was one.
             Storage::disk($disk)->delete($this->{$attribute_name});
@@ -164,7 +171,7 @@ trait HasUploadFields
             // from the root folder; that way, what gets saved in the db
             // is the public URL (everything that comes after the domain name)
             $public_destination_path = Str::replaceFirst('public/', '', $destination_path);
-            $this->attributes[$attribute_name] = $public_destination_path.'/'.$filename;
+            $this->attributes[$attribute_name] = $public_destination_path . '/' . $filename;
         }
     }
 }
