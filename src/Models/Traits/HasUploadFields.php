@@ -36,10 +36,17 @@ trait HasUploadFields
      * @param string $disk Filesystem disk used to store files.
      * @param string $destination_path Path in disk where to store the files.
      */
-    public function uploadFileWithNames($value, $attribute_name, $disk, $destination_path)
+    public function uploadFileWithNames(string $value, string $attribute_name, string $disk, string $destination_path): void
     {
+        $request = request();
+
+        if(!$request) {
+            return;
+        }
+
+
         // if a new file is uploaded, delete the file from the disk
-        if (request()->hasFile($attribute_name) &&
+        if ($request->hasFile($attribute_name) &&
             $this->{$attribute_name} &&
             $this->{$attribute_name} != null) {
             Storage::disk($disk)->delete($this->{$attribute_name});
@@ -54,9 +61,9 @@ trait HasUploadFields
 
 
         // if a new file is uploaded, store it on disk and its filename in the database
-        if (request()->hasFile($attribute_name) && request()->file($attribute_name)->isValid()) {
+        if ($request->hasFile($attribute_name) && $request->file($attribute_name)->isValid()) {
             // 1. Generate a new file name
-            $file = request()->file($attribute_name);
+            $file = $request->file($attribute_name);
 
             $new_file_name = $file->getClientOriginalName() . time() . '.' . $file->getClientOriginalExtension();
 
@@ -89,14 +96,20 @@ trait HasUploadFields
      * @param string $disk Filesystem disk used to store files.
      * @param string $destination_path Path in disk where to store the files.
      */
-    public function uploadMultipleFilesWithNames($value, $attribute_name, $disk, $destination_path)
+    public function uploadMultipleFilesWithNames(string $value, string $attribute_name, string $disk, string $destination_path): void
     {
+        $request = request();
+
+        if(!$request) {
+            return;
+        }
+
         if (!is_array($this->{$attribute_name})) {
             $attribute_value = json_decode($this->{$attribute_name}, true) ?? [];
         } else {
             $attribute_value = $this->{$attribute_name};
         }
-        $files_to_clear = request()->get('clear_' . $attribute_name);
+        $files_to_clear = $request->get('clear_' . $attribute_name);
 
         // if a file has been marked for removal,
         // delete it from the disk and from the db
@@ -104,14 +117,14 @@ trait HasUploadFields
             foreach ($files_to_clear as $key => $filename) {
                 Storage::disk($disk)->delete($filename);
                 $attribute_value = Arr::where($attribute_value, function ($value, $key) use ($filename) {
-                    return $value != $filename;
+                    return $value !== $filename;
                 });
             }
         }
 
         // if a new file is uploaded, store it on disk and its filename in the database
-        if (request()->hasFile($attribute_name)) {
-            foreach (request()->file($attribute_name) as $file) {
+        if ($request->hasFile($attribute_name)) {
+            foreach ($request->file($attribute_name) as $file) {
                 if ($file->isValid()) {
                     // 1. Generate a new file name
                     $name = explode('.', $file->getClientOriginalName());
@@ -134,17 +147,17 @@ trait HasUploadFields
     /**
      * Function to handle the saving of an image uploaded as a base64-encoded string.
      *
-     * @param $value
-     * @param $attribute_name
-     * @param $disk
-     * @param $destination_path
+     * @param string $value
+     * @param string $attribute_name
+     * @param string $disk
+     * @param string $destination_path
      * @return void
      */
-    public function uploadImage($value, $attribute_name, $disk, $destination_path)
+    public function uploadImage(string $value, string $attribute_name, string $disk, string $destination_path): void
     {
 
         // if the image was erased
-        if ($value == null) {
+        if (!$value) {
             // delete the image from disk
             Storage::disk($disk)->delete($this->{$attribute_name});
 
