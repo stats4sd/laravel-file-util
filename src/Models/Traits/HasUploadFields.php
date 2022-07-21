@@ -40,7 +40,7 @@ trait HasUploadFields
     {
         $request = request();
 
-        if(!$request) {
+        if (! $request) {
             return;
         }
 
@@ -100,7 +100,7 @@ trait HasUploadFields
     {
         $request = request();
 
-        if(!$request) {
+        if (! $request) {
             return;
         }
 
@@ -157,7 +157,7 @@ trait HasUploadFields
     {
 
         // if the image was erased
-        if (!$value) {
+        if (! $value) {
             // delete the image from disk
             Storage::disk($disk)->delete($this->{$attribute_name});
 
