@@ -135,7 +135,6 @@ trait HasUploadFields
 
     public function uploadImage($value, $attribute_name, $disk, $destination_path)
     {
-
         // if the image was erased
         if ($value == null) {
             // delete the image from disk
