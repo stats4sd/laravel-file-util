@@ -94,7 +94,7 @@ trait HasUploadFields
     public function uploadMultipleFilesWithNames($value, $attribute_name, $disk, $destination_path)
     {
         if (! is_array($this->{$attribute_name})) {
-            $attribute_value = json_decode($this->{$attribute_name}, true) ?? [];
+            $attribute_value = json_decode((string)$this->{$attribute_name}, true) ?? [];
         } else {
             $attribute_value = $this->{$attribute_name};
         }
