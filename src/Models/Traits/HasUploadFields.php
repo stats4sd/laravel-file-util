@@ -96,7 +96,7 @@ trait HasUploadFields
      * @param string $disk Filesystem disk used to store files.
      * @param string $destination_path Path in disk where to store the files.
      */
-    public function uploadMultipleFilesWithNames(string $value, string $attribute_name, string $disk, string $destination_path): void
+    public function uploadMultipleFilesWithNames(?array $value, string $attribute_name, string $disk, string $destination_path): void
     {
         $request = request();
 
