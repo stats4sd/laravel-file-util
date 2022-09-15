@@ -16,7 +16,14 @@ composer require stats4sd/laravel-file-util
 
 #### Pre-requisite:
 
-This package is developed for Laravel application with backpack package installed.
+The package has 3 main features, and you can use one or all of them in your project:
+
+- A trait `HasUploadFields`: this is based heavily on the trait shipped with Laravel Backpack, but customised slightly to our needs. 
+  - To use the trait, you need no other dependencies.
+- 2 Operation classes, to be used with Laravel Backpack.
+  - To use these operations, you should install the following extra dependencies:
+    - `composer require backpack/crud`
+    - `composer require maatwebsite/excel`
 
 ## 1. Exporting Data through a Laravel Backpack Crud panel
 
