@@ -75,7 +75,6 @@ trait HasUploadFields
             // 3. Save the complete path to the database
             $this->attributes[$attribute_name] = $file_path;
         } else {
-
             // If the request did not include a file,
             $this->attributes[$attribute_name] = $value;
         }
@@ -155,7 +154,6 @@ trait HasUploadFields
      */
     public function uploadImage(string $value, string $attribute_name, string $disk, string $destination_path): void
     {
-
         // if the image was erased
         if (! $value) {
             // delete the image from disk
